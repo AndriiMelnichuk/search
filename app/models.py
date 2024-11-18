@@ -6,7 +6,7 @@ class Task:
     name: str
     description: str
     deadline: str
-    assigned: list[str]
+    assigned: list
     todo: bool
 
 
