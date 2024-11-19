@@ -1,5 +1,6 @@
 import requests as req
 from .models import Task, Group
+from itertools import product
 
 task_url = 'http://user-service:5001/'
 task_url = 'http://localhost:5001/'
@@ -45,7 +46,7 @@ def get_groups(jwt):
     group_count = len(response['group_id'])
     group_list = [Group(
                       response['group_id'][i],
-                      response['group_name'][i],
+                      response['group'][i],
                       )
     for i in range(group_count)]
     return group_list
@@ -55,13 +56,13 @@ def filter_groups(group_list: list, text:str):
     return [group for group in group_list if text.lower() in group.name.lower()]
 
 
-def filter_tasks(task_list: list, text: str, assigned_to: list, complete_before: str, todo: bool) -> list:
+def filter_tasks(task_list: list, text: str, assigned_to: list, complete_before: str, todo, is_date) -> list:
     result = task_list.copy()
     if text != '':
         result = union(filter_by_title(result, text), filter_by_description(result, text))
     if assigned_to != []:
         result = filter_by_assigned(result, assigned_to)
-    if complete_before != '':
+    if is_date:
         result = filter_by_deadline(result, complete_before)
     if todo != '':
         result = filter_by_todo(result, todo)
@@ -94,11 +95,10 @@ def filter_by_assigned(task_list: list, assigned: list) -> list:
     for task in task_list:
         for user in task.assigned:
             if user in assigned:
-                ans.append(task)
-                break
-    return ans
+                ans.append(task)            
+    return list(set(ans))
 
 
-def filter_by_todo(task_list: list, todo: bool) -> list:
+def filter_by_todo(task_list: list, todo) -> list:
     return [task for task in task_list if todo == task.todo]
 

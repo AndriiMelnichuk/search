@@ -12,17 +12,19 @@ def task_search():
     assigned_to = data.get('assigned_to')
     complete_before = data.get('complete_before')
     todo = data.get('status')
+    is_date = data.get('is_date')
 
     task_list = get_tasks4group(group_id, jwt)
-    filtered_task_list = filter_tasks(task_list, text, assigned_to, complete_before, todo)  
-    return jsonify([{
-        'id': t.id,
-        'title': t.name,
-        'description': t.description,
-        'deadline': t.deadline,
-        'assigned': t.assigned,
-        'status': t.todo
-    } for t in filtered_task_list])
+    filtered_task_list = filter_tasks(task_list, text, assigned_to, complete_before, todo, is_date)  
+    return {
+        'id': [t.id for t in filtered_task_list],
+        'title': [t.name for t in filtered_task_list],
+        'description': [t.description for t in filtered_task_list],
+        'deadline': [t.deadline for t in filtered_task_list],
+        'assigned': [t.assigned for t in filtered_task_list],
+        'status': [t.todo for t in filtered_task_list],
+    }
+
 
 
 @main.route('/group', methods=['POST'])
@@ -33,7 +35,7 @@ def group_search():
 
     group_list = get_groups(jwt)
     filtered_group_list = filter_groups(group_list, text)
-    return jsonify([{
-        'id': group.id,
-        'name': group.name
-    } for group in filtered_group_list])
+    return{
+        "id": [group.id for group in filtered_group_list],
+        "group": [group.name for group in filtered_group_list],
+    }

@@ -7,7 +7,8 @@ curl -X POST http://localhost:5010/task -H "Content-Type: application/json" -d '
     "text": "title/descr",
     "assigned_to": ["test name", ...],
     "complete_before": "mm/dd/yyyy",
-    "status": "todo(true/false/'')"
+    "status": "todo(true/false/'')",
+    "is_date": "true/false"
 }'
 
 return_type {
