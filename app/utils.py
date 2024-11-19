@@ -3,7 +3,7 @@ from .models import Task, Group
 from itertools import product
 
 task_url = 'http://user-service:5001/'
-task_url = 'http://localhost:5001/'
+# task_url = 'http://localhost:5001/'
 
 def get_tasks4group(id, jwt):
     data = {
