@@ -100,5 +100,6 @@ def filter_by_assigned(task_list: list, assigned: list) -> list:
 
 
 def filter_by_todo(task_list: list, todo) -> list:
+    todo = 'true' == todo
     return [task for task in task_list if todo == task.todo]
 
