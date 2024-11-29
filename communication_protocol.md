@@ -1,7 +1,8 @@
 # Comunication protocol
 ## Task search
-``` shell
-curl -X POST http://localhost:5010/task -H "Content-Type: application/json" -d '{
+``` shelloo
+curl -X POST http://localhost:5010/ -H "Content-Type: application/json" -d '{
+    "type": "task",
     "jwt": "key",
     "group_id": "test id",
     "text": "title/descr",
@@ -23,7 +24,8 @@ return_type {
 
 ## Group search
 ``` shell
-curl -X POST http://localhost:5010/group -H "Content-Type: application/json" -d '{
+curl -X POST http://localhost:5010/ -H "Content-Type: application/json" -d '{
+    "type": "group",
     "jwt": "key",
     "text": "test name"
 }'

@@ -1,9 +1,7 @@
-import requests as req
 from .models import Task, Group
-from itertools import product
+from .rpcClient import RpcClient
 
-task_url = 'http://user-service:5001/'
-# task_url = 'http://localhost:5001/'
+USER_SERVICE_QUEUE = 'user_service_queue'
 
 def get_tasks4group(id, jwt):
     data = {
@@ -11,13 +9,8 @@ def get_tasks4group(id, jwt):
         'group_id': id,
         'jwt': jwt
     }
-    head = {
-        'Content-Type': 'application/json'
-    }
-    response = req.post(task_url, 
-                        json=data, 
-                        headers=head).json()
-    
+    client = RpcClient()
+    response = client.call(data, USER_SERVICE_QUEUE)
     # response2Task
     task_count = len(response['task_id'])
     task_list = [Task(
@@ -37,12 +30,8 @@ def get_groups(jwt):
         'type': 'get_groups',
         'jwt': jwt
     }
-    head = {
-        'Content-Type': 'application/json'
-    }
-    response = req.post(task_url, 
-                        json=data, 
-                        headers=head).json()
+    client = RpcClient()
+    response = client.call(data, USER_SERVICE_QUEUE)
     group_count = len(response['group_id'])
     group_list = [Group(
                       response['group_id'][i],

@@ -1,6 +1,4 @@
-from app import create_app
+from app.consumer import start_consumer
 
-app = create_app()
+start_consumer('search_queue')
 
-if __name__ == '__main__':
-    app.run(host="0.0.0.0", port=5010)
