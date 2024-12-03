@@ -35,7 +35,7 @@ def process_message(ch, method, properties, body):
 
 def start_consumer(queue_name):
     host = 'rabbitmq'
-    host = 'localhost'
+    # host = 'localhost'
     connection = pika.BlockingConnection(
         pika.ConnectionParameters(
             host, 
