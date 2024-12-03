@@ -1,4 +1,4 @@
-from .models import Task, Group
+from .models import Task, Group, TaskWithGroup
 from .rpcClient import RpcClient
 from .filter import filter_tasks, filter_groups
 USER_SERVICE_QUEUE = 'user_service_queue'
@@ -39,7 +39,29 @@ def get_groups(jwt):
                       )
     for i in range(group_count)]
     return group_list
-    
+
+
+def get_all_tasks(jwt):
+    data = {
+        'type': 'get_tasks_for_user',
+        'jwt': jwt
+    }
+    client = RpcClient()
+    response = client.call(data, USER_SERVICE_QUEUE)
+    task_count = len(response['task_id'])
+    task_list = [TaskWithGroup(
+                      response['group_id'][i],
+                      response['task_id'][i],
+                      response['task_name'][i],
+                      response['description'][i],
+                      response['deadline'][i],
+                      response['members'][i],
+                      response['todo_task'][i]
+                      )
+    for i in range(task_count)]
+    return task_list
+
+
 def on_task(message):
     jwt = message.get('jwt')
     group_id = message.get('group_id')
@@ -70,3 +92,21 @@ def on_group(message):
             "group": [group.name for group in filtered_group_list],
         }
         return response
+
+def on_task_date(message):
+    jwt = message['jwt']
+    date = message['date'] 
+    
+    task_list = get_all_tasks(jwt)
+    filtered_task_list = list(filter(lambda x: date in x.date, task_list))
+    
+    response = {
+        'group_id': [t.group_id for t in filtered_task_list],
+        'task_id': [t.task_id for t in filtered_task_list],
+        'title': [t.name for t in filtered_task_list],
+        'description': [t.description for t in filtered_task_list],
+        'deadline': [t.deadline for t in filtered_task_list],
+        'assigned': [t.assigned for t in filtered_task_list],
+        'status': [t.todo for t in filtered_task_list],
+        }
+    return response

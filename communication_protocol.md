@@ -1,6 +1,6 @@
 # Comunication protocol
 ## Task search
-``` shelloo
+``` shell
 curl -X POST http://localhost:5010/ -H "Content-Type: application/json" -d '{
     "type": "task",
     "jwt": "key",
@@ -26,6 +26,20 @@ return_type {
 ``` shell
 curl -X POST http://localhost:5010/ -H "Content-Type: application/json" -d '{
     "type": "group",
+    "jwt": "key",
+    "text": "test name"
+}'
+
+return_type {
+    "id": ["id0", ...],
+    "name": ["name0", ...]
+}
+```
+
+## task by date search
+``` shell
+curl -X POST http://localhost:5010/ -H "Content-Type: application/json" -d '{
+    "type": "task_date",
     "jwt": "key",
     "text": "test name"
 }'

@@ -1,16 +1,18 @@
 import pika
 import json
-from .utils import on_task, on_group
+from .utils import on_task, on_group, on_task_date
 
 def process_message(ch, method, properties, body):
-    # Здесь будет обработка входящего запроса входящего вместо фласк
     message = json.loads(body)
     response = {}
     if message['type'] == 'task':
         response = on_task(message)
     elif message['type'] == 'group':
         response = on_group(message)
-
+    elif message['type'] == 'task_date':
+        response = on_task_date(message)
+    else:
+        response = {'error': 'no processor'}
 
     print(f"[x] Received message: {message}")
     if properties.reply_to:
@@ -32,9 +34,11 @@ def process_message(ch, method, properties, body):
 
 
 def start_consumer(queue_name):
+    host = 'rabbitmq'
+    host = 'localhost'
     connection = pika.BlockingConnection(
         pika.ConnectionParameters(
-            'rabbitmq', 
+            host, 
             5672,   # RabbitMQ port
             '/',    # Virtual host
             pika.PlainCredentials('admin', 'password')
