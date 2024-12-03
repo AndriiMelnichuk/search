@@ -98,7 +98,7 @@ def on_task_date(message):
     date = message['date'] 
     
     task_list = get_all_tasks(jwt)
-    filtered_task_list = list(filter(lambda x: date in x.date, task_list))
+    filtered_task_list = list(filter(lambda x: date in x.deadline, task_list))
     
     response = {
         'group_id': [t.group_id for t in filtered_task_list],
