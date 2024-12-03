@@ -1,39 +1,16 @@
 import pika
 import json
-
-from .utils import filter_groups, get_groups, get_tasks4group, filter_tasks
+from .utils import on_task, on_group
 
 def process_message(ch, method, properties, body):
     # Здесь будет обработка входящего запроса входящего вместо фласк
     message = json.loads(body)
     response = {}
     if message['type'] == 'task':
-        jwt = message.get('jwt')
-        group_id = message.get('group_id')
-        text = message.get('text')
-        assigned_to = message.get('assigned_to')
-        complete_before = message.get('complete_before')
-        todo = message.get('status')
-        is_date = message.get('is_date')
-        task_list = get_tasks4group(group_id, jwt)
-        filtered_task_list = filter_tasks(task_list, text, assigned_to, complete_before, todo, is_date)  
-        response = {
-            'id': [t.id for t in filtered_task_list],
-            'title': [t.name for t in filtered_task_list],
-            'description': [t.description for t in filtered_task_list],
-            'deadline': [t.deadline for t in filtered_task_list],
-            'assigned': [t.assigned for t in filtered_task_list],
-            'status': [t.todo for t in filtered_task_list],
-        }
-    else:
-        jwt = message.get('jwt')
-        text = message.get('text')
-        group_list = get_groups(jwt)
-        filtered_group_list = filter_groups(group_list, text)
-        response = {
-            "id": [group.id for group in filtered_group_list],
-            "group": [group.name for group in filtered_group_list],
-        }
+        response = on_task(message)
+    elif message['type'] == 'group':
+        response = on_group(message)
+
 
     print(f"[x] Received message: {message}")
     if properties.reply_to:
