@@ -4,7 +4,7 @@ import uuid
 
 class RpcClient(object):
     def __init__(self, host='rabbitmq', port=5672, vhost='/', user='admin', password='password'):
-        host = 'localhost'
+        # host = 'localhost'
         # Подключаемся к RabbitMQ
         self.connection = pika.BlockingConnection(
             pika.ConnectionParameters(
